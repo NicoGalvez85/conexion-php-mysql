@@ -1,5 +1,5 @@
 <?php
-require_once '.env.php';
+require_once '.envPUBLICO.php';
 require_once 'Usuario.php';
 
 class RepositorioUsuario
@@ -44,19 +44,22 @@ class RepositorioUsuario
 
     public function save(Usuario $usuario, $clave)
     {
-       $q = "INSERT INTO usuarios (usuario, nombre, apellido, clave) ";
-       $q.= "VALUES (?, ?, ?, ?)";
+       $q = "INSERT INTO usuarios (usuario, nombre, apellido, clave, email) ";
+       $q.= "VALUES (?, ?, ?, ?, ?)";
        $query = self::$conexion->prepare($q);
        $nombre_usuario = $usuario->getUsuario();
        $nombre = $usuario->getNombre();
        $apellido = $usuario->getApellido();
+       $email = $usuario->getEmail();
        $clave_encriptada = password_hash($clave, PASSWORD_DEFAULT);
        $query->bind_param(
-           "ssss",
+           "sssss",
            $nombre_usuario,
            $nombre,
            $apellido,
+           $email,
            $clave_encriptada
+
        );
        if ($query->execute()) {
            // Se guardó bien, retornamos el id del usuario
